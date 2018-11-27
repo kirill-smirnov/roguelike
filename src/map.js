@@ -1,11 +1,9 @@
-import {SYMBOLS} from './const.js'
+import {SYMBOLS, SIZE} from './const.js'
 import {createDungeon} from './dungeon.js'
-//import { player } from './player.js'
 
 export class Map {
   constructor() {
     this.map = [];
-    this.render = []
   }
   create(player) {
     let isSpawned = false;
@@ -15,7 +13,9 @@ export class Map {
       for (let j = 0; j < m[i].length; j++) {
         let type = m[i][j].type;
         if (type === 'floor' && !isSpawned) {
-          m[i][j] = player.info; // spawn
+          // spawn
+          player.roomId = m[i][j].roomId;
+          m[i][j].object = player.info;
           player.move(j,i);
           isSpawned = true;
         }
@@ -24,42 +24,44 @@ export class Map {
     this.map = m;
     return this.map;
   }
-  create_and_render(player, camera) {
+  // create_and_render(player, camera) {
 
-    let d = this.create(player);
-    let m = this.render;
-    // let spawnCoordinates = {}
+  //   let d = this.create(player);
+  //   camera.moveOnPlayer(player);
+  //   this.FOV(player, camera);
+  //   let m = this.render;
 
-    for (let i = 0; i < d.length; i++) {
-      m[i] = [];
-      for (let j = 0; j < d[i].length; j++) {
-        let type = d[i][j].type;
-        m[i][j] = SYMBOLS[type];
+  //   for (let i = 0; i < d.length; i++) {
+  //     m[i] = [];
+  //     for (let j = 0; j < d[i].length; j++) {
+  //       let type = d[i][j].type;
+  //       m[i][j] = SYMBOLS[type];
+  //     }
+  //   }
+  //   return this.render;
+  // }
+
+  // no_collision(player, camera, i, j) {
+  //     let tan = (i-player.y)/(j-player.x);
+  //     let y = x => tan*x+player.y;
+  //     for (let x = camera.x; x < camera.x+camera.w; x++) {
+  //       let _y = y(x)
+  //       if (_y < camera.y || _y > Math.min(camera.y+camera.h, SIZE.h) || isNaN(_y)) continue;
+  //       console.log(player.x, player.y)
+  //       if (this.map[Math.floor(y(x))][x].type == SYMBOLS["0"]) {
+  //         this.map[Math.floor(y(x))][x].type = '.'
+  //         return false;
+  //       }
+  //     }
+  //     return true;
+  //  }
+
+  FOV(player, camera) {
+    let map = this.map;
+    for (let i = camera.y; i < camera.y+camera.h; i++) {
+      for (let j = camera.x; j < camera.x+camera.w; j++) {
         
       }
     }
-    return m;
   }
 }
-
-// export function createMap() {
-//   let isSpawned = false;
-
-//   let d = createDungeon();
-//   let m = [];
-//   let spawnCoordinates = {}
-
-//   for (let i = 0; i < d.length; i++) {
-//     m[i] = [];
-//     for (let j = 0; j < d[i].length; j++) {
-//       let type = d[i][j].type;
-//       m[i][j] = SYMBOLS[type];
-//       if (type === 'floor' && !isSpawned) {
-//         m[i][j] = SYMBOLS.player; // spawn
-//         spawnCoordinates = {y:i, x:j}
-//         isSpawned = true;
-//       }
-//     }
-//   }
-//   return [m, spawnCoordinates];
-// }

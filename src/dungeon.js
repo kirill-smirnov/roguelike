@@ -6,6 +6,8 @@ const _ = {
   }
 }
 
+// by Victor Catalin Torac, 2016
+
 export function createDungeon() {
   const GRID_HEIGHT = SIZE.h;
   const GRID_WIDTH = SIZE.w;
@@ -38,13 +40,13 @@ export function createDungeon() {
   const placeCells = (grid, {x, y, width = 1, height = 1, id}, type = 'floor') => {
     for (let i = y; i < y + height; i++) {
       for (let j = x; j < x + width; j++) {
-        grid[i][j] = {type, id};
+        grid[i][j] = {type, roomId:id};
       }
     }
     return grid;
   };
 
-  const createRoomsFromSeed = (grid, {x, y, width, height}, range = c.ROOM_SIZE_RANGE) => {
+  const createRoomsFromSeed = (grid, {x, y, width, height, id}, range = c.ROOM_SIZE_RANGE) => {
     // range for generating the random room heights and widths
     const [min, max] = range;
 
@@ -80,8 +82,9 @@ export function createDungeon() {
     roomValues.push(west);
 
     const placedRooms = [];
-    roomValues.forEach(room => {
+    roomValues.forEach((room, i) => {
       if (isValidRoomPlacement(grid, room)) {
+        room.id = id+i;
         // place room
         grid = placeCells(grid, room);
         // place door
@@ -100,7 +103,7 @@ export function createDungeon() {
   for (let i = 0; i < c.GRID_HEIGHT; i++) {
     grid.push([]);
     for (let j = 0; j < c.GRID_WIDTH; j++) {
-      grid[i].push({type: 0, opacity: _.random(0.3, 0.8)});
+      grid[i].push({type: 0});
     }
   }
 
@@ -110,7 +113,8 @@ export function createDungeon() {
     x: _.random(1, c.GRID_WIDTH - max - 15),
     y: _.random(1, c.GRID_HEIGHT - max - 15),
     height: _.random(min, max),
-    width: _.random(min, max)
+    width: _.random(min, max),
+    id: 0
   };
 
   // 3. place the first room on to grid
@@ -121,8 +125,10 @@ export function createDungeon() {
     if (counter + seedRooms.length > maxRooms || !seedRooms.length) {
       return grid;
     }
+    let room = seedRooms.pop();
+    room.id = counter;
 
-    grid = createRoomsFromSeed(grid, seedRooms.pop());
+    grid = createRoomsFromSeed(grid, room);
     seedRooms.push(...grid.placedRooms);
     counter += grid.placedRooms.length;
     return growMap(grid.grid, seedRooms, counter);
