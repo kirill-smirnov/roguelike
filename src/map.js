@@ -24,37 +24,7 @@ export class Map {
     this.map = m;
     return this.map;
   }
-  // create_and_render(player, camera) {
 
-  //   let d = this.create(player);
-  //   camera.moveOnPlayer(player);
-  //   this.FOV(player, camera);
-  //   let m = this.render;
-
-  //   for (let i = 0; i < d.length; i++) {
-  //     m[i] = [];
-  //     for (let j = 0; j < d[i].length; j++) {
-  //       let type = d[i][j].type;
-  //       m[i][j] = SYMBOLS[type];
-  //     }
-  //   }
-  //   return this.render;
-  // }
-
-  // no_collision(player, camera, i, j) {
-  //     let tan = (i-player.y)/(j-player.x);
-  //     let y = x => tan*x+player.y;
-  //     for (let x = camera.x; x < camera.x+camera.w; x++) {
-  //       let _y = y(x)
-  //       if (_y < camera.y || _y > Math.min(camera.y+camera.h, SIZE.h) || isNaN(_y)) continue;
-  //       console.log(player.x, player.y)
-  //       if (this.map[Math.floor(y(x))][x].type == SYMBOLS["0"]) {
-  //         this.map[Math.floor(y(x))][x].type = '.'
-  //         return false;
-  //       }
-  //     }
-  //     return true;
-  //  }
 
   FOV(player, camera) {
     let map = this.map;
