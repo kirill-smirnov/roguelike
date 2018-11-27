@@ -7,5 +7,5 @@ export const SYMBOLS = {
   0: '#',
   player: '@',
   floor: '&nbsp;',
-  door: '1'
+  door: '_'
 }
