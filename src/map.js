@@ -28,9 +28,13 @@ export class Map {
 
   FOV(player, camera) {
     let map = this.map;
+    let lighted = 0;
     for (let i = camera.y; i < camera.y+camera.h; i++) {
       for (let j = camera.x; j < camera.x+camera.w; j++) {
-        
+        if (map[i][j].roomId == player.roomId) {
+          lighted =  map[i][j].roomId;
+          return lighted;
+        }
       }
     }
   }

@@ -1,11 +1,12 @@
 export const SIZE = {
-  w: 100,
-  h: 100,
+  w: 1024,
+  h: 1024,
 }
 
 export const SYMBOLS = {
   0: '#',
-  player: '@',
-  floor: '&nbsp;',
-  door: '_'
+  player: '<span style="color:red">@</span>',
+  light: '<span style="color:#d65c00">.</span>',
+  door: '_',
+  floor: '&nbsp;'
 }

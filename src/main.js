@@ -45,20 +45,24 @@ function update() {
     previousState.x = player.x;
     previousState.y = player.y;
   }
-  map.FOV()
+  
   draw(map);
 }
 
 function draw(map) {
   //if (changed) { //!areMapsEqual(_map, previousState.map)
   // let {x, y, w, h} = map.camera;
+  let lighted = mapManager.FOV(player, camera);
   screen = '';
   for (let i = camera.y; i < camera.y+camera.h; i++) {
     for (let j = camera.x; j < camera.x+camera.w; j++) {
 
       let cell = map[i][j];
       if (cell.object == null) {
-        screen += SYMBOLS[cell.type];
+        if (lighted == cell.roomId && cell.type == 'floor')
+          screen += SYMBOLS.light;
+        else
+          screen += SYMBOLS[cell.type];
       }
       else {
         if (cell.object.type =='player') {

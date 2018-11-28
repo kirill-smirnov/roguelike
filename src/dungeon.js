@@ -6,13 +6,15 @@ const _ = {
   }
 }
 
+let counter = 1;
+
 // by Victor Catalin Torac, 2016
 
 export function createDungeon() {
   const GRID_HEIGHT = SIZE.h;
   const GRID_WIDTH = SIZE.w;
-  const MAX_ROOMS = 50;
-  const ROOM_SIZE_RANGE = [6, 12];
+  const MAX_ROOMS = 2000;
+  const ROOM_SIZE_RANGE = [7, 12];
 
   const c= { GRID_HEIGHT, GRID_WIDTH, MAX_ROOMS, ROOM_SIZE_RANGE};
   // HELPER FUNCTIONS FOR CREATING THE MAP
@@ -84,7 +86,7 @@ export function createDungeon() {
     const placedRooms = [];
     roomValues.forEach((room, i) => {
       if (isValidRoomPlacement(grid, room)) {
-        room.id = id+i;
+        room.id = counter++;
         // place room
         grid = placeCells(grid, room);
         // place door
@@ -121,7 +123,7 @@ export function createDungeon() {
   grid = placeCells(grid, firstRoom);
 
   // 4. using the first room as a seed, recursivley add rooms to the grid
-  const growMap = (grid, seedRooms, counter = 1, maxRooms = c.MAX_ROOMS) => {
+  const growMap = (grid, seedRooms, maxRooms = c.MAX_ROOMS) => {
     if (counter + seedRooms.length > maxRooms || !seedRooms.length) {
       return grid;
     }
@@ -130,8 +132,8 @@ export function createDungeon() {
 
     grid = createRoomsFromSeed(grid, room);
     seedRooms.push(...grid.placedRooms);
-    counter += grid.placedRooms.length;
-    return growMap(grid.grid, seedRooms, counter);
+    //counter += grid.placedRooms.length;
+    return growMap(grid.grid, seedRooms);
   };
   return growMap(grid, [firstRoom]);
 };
