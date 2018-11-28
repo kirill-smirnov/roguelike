@@ -15,7 +15,7 @@ export class Map {
         if (type === 'floor' && !isSpawned) {
           // spawn
           player.roomId = m[i][j].roomId;
-          m[i][j].object = player.info;
+          //m[i][j].object = player.info;
           player.move(j,i);
           isSpawned = true;
         }

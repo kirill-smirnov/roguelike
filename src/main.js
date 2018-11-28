@@ -28,53 +28,36 @@ function run_level() {
   // Input
   controlInit(player, map, camera);
   // Initial Draw
-  draw(map);
   camera.moveOnPlayer(player);
+  draw(map);
   // Update
   setInterval(_ => update(map), 1000/60);
 }
 
 function update() {
-  if (previousState.x != player.x || previousState.y != player.y) {
-    // Map update
-    map[previousState.y][previousState.x].object = null;
-    map[player.y][player.x].object = player.info;
-    // Player update
-    player.roomId = map[player.y][player.x].roomId;
-    // other
-    previousState.x = player.x;
-    previousState.y = player.y;
-  }
-  
+  // player.update
+  player.roomId = map[player.y][player.x].roomId;
   draw(map);
 }
 
 function draw(map) {
-  //if (changed) { //!areMapsEqual(_map, previousState.map)
-  // let {x, y, w, h} = map.camera;
+  // mapManager.draw
   let lighted = mapManager.FOV(player, camera);
-  screen = '';
+  let screen = [];
   for (let i = camera.y; i < camera.y+camera.h; i++) {
+    screen[i] = [];
     for (let j = camera.x; j < camera.x+camera.w; j++) {
 
       let cell = map[i][j];
-      if (cell.object == null) {
-        if (lighted == cell.roomId && cell.type == 'floor')
-          screen += SYMBOLS.light;
-        else
-          screen += SYMBOLS[cell.type];
-      }
-      else {
-        if (cell.object.type =='player') {
-          screen += SYMBOLS.player;
-        }
-      }
-      
+      if (lighted == cell.roomId && cell.type == 'floor')
+        screen[i][j] = SYMBOLS.light;
+      else
+        screen[i][j] = SYMBOLS[cell.type];
     }
-    screen += '<br />';
-    
   }
-  game.innerHTML = screen;
+  // player.draw
+  screen[player.y][player.x] = SYMBOLS.player; //TODO: 
+  game.innerHTML = screen.flat().join('');
 }
 
 run_level();
