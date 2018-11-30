@@ -105,7 +105,7 @@ export function createDungeon() {
   for (let i = 0; i < c.GRID_HEIGHT; i++) {
     grid.push([]);
     for (let j = 0; j < c.GRID_WIDTH; j++) {
-      grid[i].push({type: 0});
+      grid[i].push({type: 'wall'});
     }
   }
 

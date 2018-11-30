@@ -2,19 +2,20 @@ import './sass/styles.sass'
 import './sass/reset.css'
 
 import {SIZE, SYMBOLS} from './const.js'
-import { Player } from './player.js'
+import { Player } from './character.js'
 import { controlInit } from './control.js'
 import { Map } from './map.js'
 import { Camera } from './camera.js'
 
 
-const game = document.querySelector('#app');
+const game = document.querySelector('#map');
 
 let player = new Player(0, 0);
 let previousState = {}
 let camera = new Camera();
 let mapManager = new Map();
 let map = mapManager.create(player, camera);
+let isControlOn = false;
 
 function run_level() {
   //player.map = map;
@@ -26,7 +27,10 @@ function run_level() {
 
 
   // Input
-  controlInit(player, map, camera);
+  if (!isControlOn) {
+    controlInit(player, map, camera)
+    isControlOn = true;
+  }
   // Initial Draw
   camera.moveOnPlayer(player);
   draw(map);
@@ -42,17 +46,25 @@ function update() {
 
 function draw(map) {
   // mapManager.draw
-  let lighted = mapManager.FOV(player, camera);
+  mapManager.FOV(player, camera);
   let screen = [];
   for (let i = camera.y; i < camera.y+camera.h; i++) {
     screen[i] = [];
     for (let j = camera.x; j < camera.x+camera.w; j++) {
 
+      // let cell = map[i][j];
+      // if (lighted == cell.roomId && cell.type == 'floor')
+      //   screen[i][j] = SYMBOLS.light;
+      // else
+      //   screen[i][j] = SYMBOLS[cell.type];
       let cell = map[i][j];
-      if (lighted == cell.roomId && cell.type == 'floor')
-        screen[i][j] = SYMBOLS.light;
-      else
-        screen[i][j] = SYMBOLS[cell.type];
+      // if (cell.object == null) {
+        if (cell.lighted) {
+          screen[i][j] = SYMBOLS.light;
+        }
+        else
+          screen[i][j] = SYMBOLS[cell.type];
+      // }
     }
   }
   // player.draw

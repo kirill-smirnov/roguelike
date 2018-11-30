@@ -4,7 +4,7 @@ export const SIZE = {
 }
 
 export const SYMBOLS = {
-  0: '#',
+  wall: '#',
   player: '<span style="color:red">@</span>',
   light: '<span style="color:#d65c00">.</span>',
   door: '_',

@@ -26,10 +26,10 @@ class PhysicalEntity {
   }
 
   collides(direction, map) {
-    if (direction == 'up' && this._y > 0 && map[this._y-1][this._x].type != '0' ||
-        direction == 'left' && this._x > 0 && map[this._y][this._x-1].type != '0' ||
-        direction == 'right' && this._x < (SIZE.w-1) && map[this._y][this._x+1].type != '0' ||
-        direction == 'down' && this._y < (SIZE.h-1) && map[this._y+1][this._x].type != '0') {
+    if (direction == 'up' && this._y > 0 && map[this._y-1][this._x].type != 'wall' ||
+        direction == 'left' && this._x > 0 && map[this._y][this._x-1].type != 'wall' ||
+        direction == 'right' && this._x < (SIZE.w-1) && map[this._y][this._x+1].type != 'wall' ||
+        direction == 'down' && this._y < (SIZE.h-1) && map[this._y+1][this._x].type != 'wall') {
             return false
     }
     return true
@@ -51,7 +51,20 @@ class PhysicalEntity {
       roomId: this.roomId
     }
   }
+  get stats() {
+    return {
+      hp: 2,
+      attack: 1,
+      defense: 0
+    }
+  }
+}
 
+export class Monster extends PhysicalEntity {
+  constructor(x, y, symbol=SYMBOLS.monster) {
+    super(x,y);
+    this.symbol = symbol;
+  }
 }
 
 
@@ -61,7 +74,7 @@ export class Player extends PhysicalEntity {
     this.lvl = 1;
     this.wore_items = {
       weapon: null,
-      weapon: null,
+      weapon2: null,
       head: null,
       neck: null, 
       chest: null,
@@ -74,15 +87,11 @@ export class Player extends PhysicalEntity {
       shoulders:null
     }
   }
-  get hp() {
-    return 10+this.lvl^1.5;
-  }
-
-  get attack() {
-    return 1 + this.items.reduce((total, item) => {total+item.attack});
-  }
-
-  get defense() {
-    return 2 + this.items.reduce((total, item) => {total+item.defense});
+  get stats() {
+    return {
+      hp: 10+this.lvl^1.5,
+      attack: 1 + this.items.reduce((total, item) => {total+item.attack}),
+      defense: 2 + this.items.reduce((total, item) => {total+item.defense})
+    }
   }
 }
