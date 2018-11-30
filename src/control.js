@@ -1,7 +1,7 @@
 export const controlInit = (player, map, camera) => { 
   // Input
 
-  document.addEventListener('keydown', e => {console.log('sa')
+  document.addEventListener('keydown', e => {
     switch(e.keyCode) {
       case 87: // W
       case 38:

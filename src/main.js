@@ -41,6 +41,15 @@ function run_level() {
 function update() {
   // player.update
   player.roomId = map[player.y][player.x].roomId;
+
+  // mapManager update
+  for (let i = camera.y; i < camera.y+camera.h; i++) {
+    screen[i] = [];
+    for (let j = camera.x; j < camera.x+camera.w; j++) {
+      map[i][j].lighted = false;
+    }
+  }
+
   draw(map);
 }
 
