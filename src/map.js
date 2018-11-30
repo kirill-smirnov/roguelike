@@ -31,16 +31,6 @@ export class Map {
     FOV(player, camera) {
     let map = this.map;
     let radius = 10;
-    // for (let i = camera.y; i < camera.y+camera.h; i++) {
-    //   for (let j = camera.x; j < camera.x+camera.w; j++) {
-    //     if (map[i][j].type == 'floor' && map[i][j].roomId == player.roomId &&
-    //      Math.sqrt((i-player.y)**2+(j-player.x)**2) < radius) {
-    //       map[i][j].lighted = true;
-    //     } else {
-    //        map[i][j].lighted = false;
-    //     }
-    //   }
-    // }
 
     for (let phi = 0; phi < 360; phi++) {
       let x=Math.cos(phi*Math.PI/180);
@@ -52,12 +42,9 @@ export class Map {
         if (i >= SIZE.h || j >= SIZE.w || i < 0 || j < 0)
           continue
         if (map[i][j].type === 'wall') {
-          continue;
+          break;
         }
-        //if (map[i][j].type === 'floor') {
-          map[i][j].lighted = true;
-        //}
-       
+        else map[i][j].lighted = true;
         ox +=x;
         oy += y;
       }

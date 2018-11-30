@@ -8,5 +8,6 @@ export const SYMBOLS = {
   player: '<span style="color:red">@</span>',
   light: '<span style="color:#d65c00">.</span>',
   door: '_',
-  floor: '&nbsp;'
+  floor: '&nbsp;',
+  monster: '<span style="color:green">M</span>'
 }
