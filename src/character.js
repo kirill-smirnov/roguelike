@@ -18,6 +18,7 @@ class Inventory {
 class PhysicalEntity {
   constructor(x, y) {
     this.move(x, y);
+    this.type = '';
   }
 
   move(x, y) {
@@ -64,6 +65,27 @@ export class Monster extends PhysicalEntity {
   constructor(x, y, symbol=SYMBOLS.monster) {
     super(x,y);
     this.symbol = symbol;
+    this.type = 'monster';
+  }
+
+  static createMany(map, n=2000) {
+  let monstersNeeded = n;
+
+  let monsters = [];
+
+  while (monstersNeeded) {
+    let random = (min, max) => Math.floor(Math.random() * (max - min) + min);
+    let x, y;
+    do {
+      x = random(0, SIZE.w);
+      y = random(0, SIZE.h)
+    } while (map[y][x].type == 'wall');
+
+    monsters.push(new Monster(x, y));
+    monstersNeeded--;
+  }
+
+  return monsters;
   }
 }
 
@@ -71,6 +93,7 @@ export class Monster extends PhysicalEntity {
 export class Player extends PhysicalEntity {
   constructor(x, y) {
     super(x,y);
+    this.type = 'player';
     this.lvl = 1;
     this.wore_items = {
       weapon: null,
