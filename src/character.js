@@ -47,9 +47,8 @@ class PhysicalEntity {
 
   get info() {
     return {
-      type : 'player',
-      instance: this,
-      roomId: this.roomId
+      type : this.type,
+      instance: this
     }
   }
   get stats() {
@@ -61,7 +60,35 @@ class PhysicalEntity {
   }
 }
 
-export class Monster extends PhysicalEntity {
+class AliveEntity extends PhysicalEntity {
+  constructor(x, y) {
+    super(x, y);
+    this.lastTimeAttacked = 0;
+  }
+  update(objects) {
+    let o = objects.filter(o => o.x === this.x && o.y === this.y && o.type !== this.type)[0];
+    this.act(o);
+  }
+
+  act(o) {
+    if (o) {
+      
+      //TODO: make fights turn based. Check when it attacked
+        if (Date.now() - this.lastTimeAttacked > 500) {
+        this.attack(o);
+
+        this.lastTimeAttacked = Date.now();
+      }
+      
+    }
+  }
+
+  attack(o) {
+    console.log(`${this.type} attacked ${o.type} and hitted ${this.stats.attack-o.stats.defense/2}`);
+  }
+}
+
+export class Monster extends AliveEntity {
   constructor(x, y, symbol=SYMBOLS.monster) {
     super(x,y);
     this.symbol = symbol;
@@ -90,12 +117,12 @@ export class Monster extends PhysicalEntity {
 }
 
 
-export class Player extends PhysicalEntity {
+export class Player extends AliveEntity {
   constructor(x, y) {
     super(x,y);
     this.type = 'player';
     this.lvl = 1;
-    this.wore_items = {
+    this.items = {
       weapon: null,
       weapon2: null,
       head: null,
@@ -110,11 +137,12 @@ export class Player extends PhysicalEntity {
       shoulders:null
     }
   }
+
   get stats() {
     return {
       hp: 10+this.lvl^1.5,
-      attack: 1 + this.items.reduce((total, item) => {total+item.attack}),
-      defense: 2 + this.items.reduce((total, item) => {total+item.defense})
+      attack: 1 + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].attack : total, 0),
+      defense: 2 + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].defense : total, 0)
     }
   }
 }

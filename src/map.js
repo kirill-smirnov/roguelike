@@ -16,7 +16,7 @@ export class Map {
         let type = m[i][j].type;
         if (type === 'floor' && !isSpawned) {
           // spawn
-          player.roomId = m[i][j].roomId;
+          //player.roomId = m[i][j].roomId;
           //m[i][j].object = player.info;
           player.move(j,i);
           isSpawned = true;
@@ -27,8 +27,18 @@ export class Map {
     return this.map;
   }
 
+  update(camera) {
+    let map = this.map;
+    
+    for (let i = camera.y; i < camera.y+camera.h; i++) {
+      for (let j = camera.x; j < camera.x+camera.w; j++) {
+        map[i][j].lighted = false;
+      }
+    }
 
-    FOV(player, camera) {
+  }
+
+  FOV(player, camera) {
     let map = this.map;
     let radius = 10;
 

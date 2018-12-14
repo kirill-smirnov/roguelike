@@ -39,15 +39,11 @@ function run_level() {
 }
 
 function update() {
-  // player.update
-  player.roomId = map[player.y][player.x].roomId;
-
   // mapManager update
-  for (let i = camera.y; i < camera.y+camera.h; i++) {
-    screen[i] = [];
-    for (let j = camera.x; j < camera.x+camera.w; j++) {
-      map[i][j].lighted = false;
-    }
+  mapManager.update(camera);
+
+  for (let o of objects) {
+    o.update(objects)
   }
 
   draw(map);
@@ -72,9 +68,10 @@ function draw(map) {
   //screen[player.y][player.x] = SYMBOLS.player; //TODO: 
 
   for (let o of objects.filter(o => o.x >= camera.x && o.x < camera.x+camera.w && o.y >=camera.y && o.y < camera.y+camera.h)) {
-
     screen[o.y][o.x] = SYMBOLS[o.type];
   }
+
+  screen[player.y][player.x] = SYMBOLS.player;
 
   game.innerHTML = screen.flat().join('');
 }
