@@ -63,29 +63,35 @@ class PhysicalEntity {
       instance: this
     }
   }
-  get stats() {
-    return {
-      hp: 2,
-      attack: 1,
-      defense: 0
-    }
-  }
 }
 
 class AliveEntity extends PhysicalEntity {
   constructor(x, y) {
     super(x, y);
+    this._stats = {
+      hp: 0,
+      attack: 0,
+      defense: 0
+    }
+
+
     this.lastTimeAttacked = 0;
+    this.isEnemy = false;
+    this.isDead = false;
   }
   update(objects) {
+    if (this._stats.hp <= 0) {
+      this.isDead = true;
+      return;
+    }
     let o = objects.filter(o => o.x === this.x && o.y === this.y && o.type !== this.type)[0];
     this.act(o);
   }
 
   act(o) {
-    if (o) {
-      
-      //TODO: make fights turn based. Check when it attacked
+    if (o && !o.isDead && 
+      ((this.type == 'player' && o.isEnemy) || (this.type == 'monster' && o.type == 'player'))
+      ) {
         if (Date.now() - this.lastTimeAttacked > 500) {
         this.attack(o);
 
@@ -96,15 +102,33 @@ class AliveEntity extends PhysicalEntity {
   }
 
   attack(o) {
-    console.log(`${this.type} attacked ${o.type} and hitted ${this.stats.attack-o.stats.defense/2}`);
+    let minusHp = this._stats.attack*(100/(o.stats.defense+100));
+    console.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
+    o.stats.hp -= minusHp;
+    console.log(`${o.type} has ${o.stats.hp}`)
+  }
+
+  set stats(stats) {
+    this._stats = stats;
+  }
+
+  get stats() {
+    return this._stats;
   }
 }
 
 export class Monster extends AliveEntity {
   constructor(x, y, symbol=SYMBOLS.monster) {
     super(x,y);
+    this._stats = {
+      hp: 2,
+      attack: 1,
+      defense: 0
+    },
+
     this.symbol = symbol;
     this.type = 'monster';
+    this.isEnemy = true;
   }
 
   static spawnMany(map, n=2000) {
@@ -129,6 +153,12 @@ export class Monster extends AliveEntity {
 export class Player extends AliveEntity {
   constructor(x, y) {
     super(x,y);
+    this._stats = {
+      hp: 10,
+      attack: 5,
+      defense: 2,
+    }
+
     this.type = 'player';
     this.lvl = 1;
     this.items = {
@@ -149,9 +179,9 @@ export class Player extends AliveEntity {
 
   get stats() {
     return {
-      hp: 10+this.lvl^1.5,
-      attack: 1 + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].attack : total, 0),
-      defense: 2 + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].defense : total, 0)
+      hp: this._stats.hp+this.lvl^1.5,
+      attack: this._stats.attack + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].attack : total, 0),
+      defense: this._stats.defense + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].defense : total, 0)
     }
   }
 }
