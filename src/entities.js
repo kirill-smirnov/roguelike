@@ -50,7 +50,12 @@ class PhysicalEntity {
   }
 
   remove(objects) {
-
+    for (let i = 0; i < objects.length; i++) {
+      var o = objects[i];
+      if (o.guid === this.guid) {
+        delete objects[i];
+      }
+    }
   }
 
   get x() { return this._x }
@@ -85,11 +90,12 @@ class AliveEntity extends PhysicalEntity {
     this.isDead = false;
   }
   update(objects) {
+    if (this.isDead) return;
+
     let o = objects.filter(o => o.x === this.x && o.y === this.y && o.type !== this.type)[0];
     this.act(o);
     if (this._stats.hp <= 0) {
       this.isDead = true;
-      this.remove(objects);
       return;
     }
   }
