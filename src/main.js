@@ -2,7 +2,7 @@ import './sass/styles.sass'
 import './sass/reset.css'
 
 import {SIZE, SYMBOLS} from './const.js'
-import { Player, Monster } from './character.js'
+import { Player, Monster } from './entities.js'
 import { controlInit } from './control.js'
 import { Map } from './map.js'
 import { Camera } from './camera.js'
@@ -10,21 +10,24 @@ import { Camera } from './camera.js'
 
 const game = document.querySelector('#map');
 
-let player = new Player(0, 0);
+let player = new Player();
 
 let camera = new Camera();
 let mapManager = new Map();
-let map = mapManager.create(player, camera);
+let map = mapManager.create();
 let isControlOn = false;
 
-let objects = [player];
+let objects = [];
 
 function mostersCreate() {
   
 }
 
 function run_level() {
-  objects = objects.concat(Monster.createMany(map, 2000 ));
+  //spawn player 
+  player.spawn(map);
+  objects.push(player);
+  objects = objects.concat(Monster.spawnMany(map, 2000 ));
 
   // Input
   if (!isControlOn) {

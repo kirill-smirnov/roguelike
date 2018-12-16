@@ -6,21 +6,21 @@ export class Map {
   constructor() {
     this.map = [];
   }
-  create(player) {
-    let isSpawned = false;
+  create() {
+    //let isSpawned = false;
     let m = createDungeon();
 
     for (let i = 0; i < m.length; i++) {
       for (let j = 0; j < m[i].length; j++) {
         m[i][j].lighted = false;
         let type = m[i][j].type;
-        if (type === 'floor' && !isSpawned) {
+        // if (type === 'floor' && !isSpawned) {
           // spawn
           //player.roomId = m[i][j].roomId;
           //m[i][j].object = player.info;
-          player.move(j,i);
-          isSpawned = true;
-        }
+          //player.move(j,i);
+          //isSpawned = true;
+        // }
       }
     }
     this.map = m;

@@ -1,6 +1,8 @@
 import { SIZE, SYMBOLS} from './const.js'
 import {map} from './main.js'
 
+let random = (min, max) => Math.floor(Math.random() * (max - min) + min);
+
 class Inventory {
   constructor() {
     this.items = [];
@@ -19,6 +21,16 @@ class PhysicalEntity {
   constructor(x, y) {
     this.move(x, y);
     this.type = '';
+  }
+
+  spawn(map, x, y) {
+    if (x == null || y == null) {
+      do {
+        x = random(0, SIZE.w);
+        y = random(0, SIZE.h)
+      } while (map[y][x].type != 'floor');
+    }
+    this.move(x, y);
   }
 
   move(x, y) {
@@ -95,21 +107,18 @@ export class Monster extends AliveEntity {
     this.type = 'monster';
   }
 
-  static createMany(map, n=2000) {
-  let monstersNeeded = n;
+  static spawnMany(map, n=2000) {
+    let monstersNeeded = n;
 
-  let monsters = [];
+    let monsters = [];
 
-  while (monstersNeeded) {
-    let random = (min, max) => Math.floor(Math.random() * (max - min) + min);
-    let x, y;
-    do {
-      x = random(0, SIZE.w);
-      y = random(0, SIZE.h)
-    } while (map[y][x].type == 'wall');
+    while (monstersNeeded) {
+      
+      let monster = new Monster();
+      monster.spawn(map);
 
-    monsters.push(new Monster(x, y));
-    monstersNeeded--;
+      monsters.push(monster);
+      monstersNeeded--;
   }
 
   return monsters;
