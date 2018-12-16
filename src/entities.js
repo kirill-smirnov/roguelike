@@ -78,12 +78,6 @@ class PhysicalEntity {
 class AliveEntity extends PhysicalEntity {
   constructor(x, y) {
     super(x, y);
-    this._stats = {
-      hp: 0,
-      attack: 0,
-      defense: 0
-    }
-
 
     this.lastTimeAttacked = 0;
     this.isEnemy = false;
@@ -92,20 +86,28 @@ class AliveEntity extends PhysicalEntity {
   update(objects) {
     if (this.isDead) return;
 
-    let o = objects.filter(o => o.x === this.x && o.y === this.y && o.type !== this.type)[0];
-    this.act(o);
-    if (this._stats.hp <= 0) {
+    let o = objects.filter(o => o.x === this.x && o.y === this.y && o.guid !== this.guid)[0];
+
+    if (o) this.act(o);
+    if (this.hp <= 0) {
       this.isDead = true;
       return;
     }
   }
+  doAttack(o) {
+    let minusHp = this.stats.attack*(100/(o.stats.defense+100));
+    console.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
+    o.hp -= minusHp;
+    console.log(`${o.type} has ${o.stats.hp}`)
+  }
+
 
   act(o) {
     if (o && !o.isDead && 
       ((this.type == 'player' && o.isEnemy) || (this.type == 'monster' && o.type == 'player'))
       ) {
-        if (Date.now() - this.lastTimeAttacked > 500) {
-        this.attack(o);
+      if (Date.now() - this.lastTimeAttacked > 500) {
+        this.doAttack(o);
 
         this.lastTimeAttacked = Date.now();
       }
@@ -113,30 +115,31 @@ class AliveEntity extends PhysicalEntity {
     }
   }
 
-  attack(o) {
-    let minusHp = this._stats.attack*(100/(o.stats.defense+100));
-    console.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
-    o.stats.hp -= minusHp;
-    console.log(`${o.type} has ${o.stats.hp}`)
-  }
-
   set stats(stats) {
     this._stats = stats;
   }
 
   get stats() {
-    return this._stats;
+    return {
+      hp: this.hp,
+      attack: this.attack,
+      defense: this.defense
+    }
   }
 }
 
 export class Monster extends AliveEntity {
   constructor(x, y, symbol=SYMBOLS.monster) {
     super(x,y);
-    this._stats = {
-      hp: 2,
-      attack: 1,
-      defense: 0
-    },
+    // this._stats = {
+    //   hp: 2,
+    //   attack: 1,
+    //   defense: 0
+    // },
+
+    this.hp = 2;
+    this.attack = 1;
+    this.defense = 0;
 
     this.symbol = symbol;
     this.type = 'monster';
@@ -166,12 +169,12 @@ export class Player extends AliveEntity {
   constructor(x, y) {
     super(x,y);
     this.type = 'player';
-    this._stats = {
-      hp: 10,
-      attack: 5,
-      defense: 2,
-    }
+    this.hp = 10;
+    this.attack = 5;
+    this.defense = 2;
+
     this.lvl = 1;
+    this.exp = 0;
     this.items = {
       weapon: null,
       weapon2: null,
@@ -190,9 +193,11 @@ export class Player extends AliveEntity {
 
   get stats() {
     return {
-      hp: this._stats.hp+this.lvl^1.5,
-      attack: this._stats.attack + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].attack : total, 0),
-      defense: this._stats.defense + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].defense : total, 0)
+      hp: this.hp,
+      attack: this.attack + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].attack : total, 0),
+      defense: this.defense + Object.keys(this.items).reduce((total, item) => this.items[item] ? total+this.items[item].defense : total, 0),
+      lvl: this.lvl,
+      exp: this.exp
     }
   }
 }

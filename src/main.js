@@ -6,6 +6,15 @@ import { Player, Monster } from './entities.js'
 import { controlInit } from './control.js'
 import { Map } from './map.js'
 import { Camera } from './camera.js'
+import { GUI } from './gui.js'
+
+Object.defineProperty(Array.prototype, 'flat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth-1)) ? toFlatten.flat(depth-1) : toFlatten);
+      }, []);
+    }
+});
 
 
 const game = document.querySelector('#map');
@@ -68,7 +77,6 @@ function draw(map) {
     }
   }
   // player.draw
-  //screen[player.y][player.x] = SYMBOLS.player; //TODO: 
 
   for (let o of objects.filter(o => o.x >= camera.x && o.x < camera.x+camera.w && o.y >=camera.y && o.y < camera.y+camera.h)) {
     if (!o.isDead)
@@ -76,8 +84,9 @@ function draw(map) {
   }
 
   screen[player.y][player.x] = SYMBOLS.player;
-
   game.innerHTML = screen.flat().join('');
+
+  GUI.updateGUI(player);
 }
 
 run_level();
