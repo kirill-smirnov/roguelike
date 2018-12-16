@@ -71,7 +71,8 @@ function draw(map) {
   //screen[player.y][player.x] = SYMBOLS.player; //TODO: 
 
   for (let o of objects.filter(o => o.x >= camera.x && o.x < camera.x+camera.w && o.y >=camera.y && o.y < camera.y+camera.h)) {
-    screen[o.y][o.x] = SYMBOLS[o.type];
+    if (!o.isDead)
+      screen[o.y][o.x] = SYMBOLS[o.type];
   }
 
   screen[player.y][player.x] = SYMBOLS.player;
