@@ -20,6 +20,7 @@ class Inventory {
 class PhysicalEntity {
   constructor(x, y) {
     this.move(x, y);
+    this.guid =  Math.floor((1 + Math.random()) * 0x10000000000);
     this.type = '';
   }
 
@@ -46,6 +47,10 @@ class PhysicalEntity {
             return false
     }
     return true
+  }
+
+  remove(objects) {
+
   }
 
   get x() { return this._x }
@@ -80,12 +85,13 @@ class AliveEntity extends PhysicalEntity {
     this.isDead = false;
   }
   update(objects) {
-    if (this._stats.hp <= 0) {
-      this.isDead = true;
-      return;
-    }
     let o = objects.filter(o => o.x === this.x && o.y === this.y && o.type !== this.type)[0];
     this.act(o);
+    if (this._stats.hp <= 0) {
+      this.isDead = true;
+      this.remove(objects);
+      return;
+    }
   }
 
   act(o) {
@@ -153,13 +159,12 @@ export class Monster extends AliveEntity {
 export class Player extends AliveEntity {
   constructor(x, y) {
     super(x,y);
+    this.type = 'player';
     this._stats = {
       hp: 10,
       attack: 5,
       defense: 2,
     }
-
-    this.type = 'player';
     this.lvl = 1;
     this.items = {
       weapon: null,
