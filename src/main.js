@@ -16,7 +16,6 @@ Object.defineProperty(Array.prototype, 'flat', {
     }
 });
 
-
 const game = document.querySelector('#map');
 
 let player = new Player();
@@ -28,11 +27,8 @@ let isControlOn = false;
 
 let objects = [];
 
-function mostersCreate() {
-  
-}
-
 function run_level() {
+  GUI.log('Welcome to world of Ghoarthea')
   //spawn player 
   player.spawn(map);
   objects.push(player);

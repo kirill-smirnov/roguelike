@@ -7,4 +7,8 @@ export  class GUI {
     let {lvl, exp, hp, attack, defense} = player.stats;
     gui.innerHTML = `lvl: ${lvl} exp: ${exp} hp: ${hp} attack: ${attack} defense: ${defense}`;
   }
+
+  static log(msg) {
+    log.innerHTML += msg + '<br>';
+  }
 }

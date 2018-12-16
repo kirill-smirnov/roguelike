@@ -1,5 +1,6 @@
 import { SIZE, SYMBOLS} from './const.js'
 import {map} from './main.js'
+import {GUI} from './gui.js'
 
 let random = (min, max) => Math.floor(Math.random() * (max - min) + min);
 
@@ -95,10 +96,9 @@ class AliveEntity extends PhysicalEntity {
     }
   }
   doAttack(o) {
-    let minusHp = this.stats.attack*(100/(o.stats.defense+100));
-    console.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
+    let minusHp = this.stats.attack*(100/(o.stats.defense+100)).toFixed(2);
+    GUI.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
     o.hp -= minusHp;
-    console.log(`${o.type} has ${o.stats.hp}`)
   }
 
 
