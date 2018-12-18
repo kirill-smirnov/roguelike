@@ -41,6 +41,7 @@ function run_level() {
   }
   // Initial Draw
   camera.moveOnPlayer(player);
+
   draw(map);
   // Update
   setInterval(_ => update(map), 1000/60);
@@ -60,6 +61,7 @@ function update() {
 function draw(map) {
   // mapManager.draw
   mapManager.FOV(player, camera);
+
   let screen = [];
   for (let i = camera.y; i < camera.y+camera.h; i++) {
     screen[i] = [];
@@ -72,7 +74,7 @@ function draw(map) {
           screen[i][j] = SYMBOLS[cell.type];
     }
   }
-  // player.draw
+  // object.draw
 
   for (let o of objects.filter(o => o.x >= camera.x && o.x < camera.x+camera.w && o.y >=camera.y && o.y < camera.y+camera.h)) {
     if (!o.isDead)
@@ -80,7 +82,16 @@ function draw(map) {
   }
 
   screen[player.y][player.x] = SYMBOLS.player;
-  game.innerHTML = screen.flat().join('');
+  //game.innerHTML = screen.flat().join('');
+
+  game.innerHTML = '';
+ 
+ for (let i = camera.y; i < camera.y+camera.h; i++) {
+    //for (let j = camera.x; j < camera.x+camera.w; j++) {
+      game.innerHTML += screen[i].join('') + '<br>';
+    //}
+  }
+
 
   GUI.updateGUI(player);
 }

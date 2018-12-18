@@ -1,6 +1,8 @@
 export const SIZE = {
   w: 1024,
   h: 1024,
+  screenW: 1280,
+  screenH: 720
 }
 
 export const SYMBOLS = {
