@@ -81,6 +81,8 @@ class AliveEntity extends PhysicalEntity {
     super(x, y);
 
     this.lastTimeAttacked = 0;
+    this.lastTimeAddedHP = 0;
+    this.timeToAddHP = 1000;
     this.isEnemy = false;
     this.isDead = false;
   }
@@ -88,11 +90,17 @@ class AliveEntity extends PhysicalEntity {
     if (this.isDead) return;
 
     let o = objects.filter(o => o.x === this.x && o.y === this.y && o.guid !== this.guid)[0];
-
     if (o) this.act(o);
+
+    if (this.hp < this.maxHP) {
+      if (Date.now() - this.lastTimeAddedHP >= this.timeToAddHP) {
+        this.hp += Math.min(this.maxHP/60, this.maxHP-this.hp); // Not to add HP more than max
+        this.lastTimeAddedHP = Date.now();
+      }
+    }
+
     if (this.hp <= 0) {
       this.isDead = true;
-      return;
     }
   }
   doAttack(o) {
@@ -106,7 +114,7 @@ class AliveEntity extends PhysicalEntity {
     if (o && !o.isDead && 
       ((this.type == 'player' && o.isEnemy) || (this.type == 'monster' && o.type == 'player'))
       ) {
-      if (Date.now() - this.lastTimeAttacked > 500) {
+      if (Date.now() - this.lastTimeAttacked >= 500) {
         this.doAttack(o);
 
         this.lastTimeAttacked = Date.now();
@@ -131,13 +139,9 @@ class AliveEntity extends PhysicalEntity {
 export class Monster extends AliveEntity {
   constructor(x, y, symbol=SYMBOLS.monster) {
     super(x,y);
-    // this._stats = {
-    //   hp: 2,
-    //   attack: 1,
-    //   defense: 0
-    // },
+    this.timeToAddHP = 2000;
 
-    this.hp = 2;
+    this.hp = this.maxHP = 2;
     this.attack = 1;
     this.defense = 0;
 
@@ -169,7 +173,7 @@ export class Player extends AliveEntity {
   constructor(x, y) {
     super(x,y);
     this.type = 'player';
-    this.hp = 10;
+    this.hp = this.maxHP= 10;
     this.attack = 5;
     this.defense = 2;
 
