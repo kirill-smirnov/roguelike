@@ -4,31 +4,24 @@ import {createDungeon} from './dungeon.js'
 
 export class Map {
   constructor() {
-    this.map = [];
+    this.dungeons = [];
+    this.currentID = 0;
+    this.currentLevel = 0;
   }
   create() {
-    //let isSpawned = false;
-    let m = createDungeon();
+    let m = createDungeon(); // array of levels
 
     for (let i = 0; i < m.length; i++) {
       for (let j = 0; j < m[i].length; j++) {
         m[i][j].lighted = false;
-        let type = m[i][j].type;
-        // if (type === 'floor' && !isSpawned) {
-          // spawn
-          //player.roomId = m[i][j].roomId;
-          //m[i][j].object = player.info;
-          //player.move(j,i);
-          //isSpawned = true;
-        // }
       }
     }
-    this.map = m;
-    return this.map;
+    this.dungeons.push(m);
+    return this.dungeons[this.currentID][this.currentLevel];
   }
 
   update(camera) {
-    let map = this.map;
+    let map = this.dungeons[this.currentID][this.currentLevel];
     
     for (let i = camera.y; i < camera.y+camera.h; i++) {
       for (let j = camera.x; j < camera.x+camera.w; j++) {
@@ -39,7 +32,7 @@ export class Map {
   }
 
   FOV(player, camera) {
-    let map = this.map;
+    let map = this.dungeons[this.currentID][this.currentLevel];
     let radius = 10;
 
     for (let phi = 0; phi < 360; phi++) {

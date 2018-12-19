@@ -9,6 +9,6 @@ export  class GUI {
   }
 
   static log(msg) {
-    log.innerHTML += msg + '<br>';
+    log.innerHTML = msg + '<br>' + log.innerHTML;
   }
 }

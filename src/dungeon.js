@@ -99,41 +99,47 @@ export function createDungeon() {
   };
 
   // BUILD OUT THE MAP
+  let levelRequired = 1;// Dungeons with few levels of depth
+  let map = [];
 
-  // 1. make a grid of 'empty' cells, with a random opacity value (for styling)
-  let grid = [];
-  for (let i = 0; i < c.GRID_HEIGHT; i++) {
-    grid.push([]);
-    for (let j = 0; j < c.GRID_WIDTH; j++) {
-      grid[i].push({type: 'wall'});
+  for (let i=0; i < levelRequired; i++) {
+    // 1. make a grid of 'empty' cells, with a random opacity value (for styling)
+    let grid = [];
+    for (let i = 0; i < c.GRID_HEIGHT; i++) {
+      grid.push([]);
+      for (let j = 0; j < c.GRID_WIDTH; j++) {
+        grid[i].push({type: 'wall'});
+      }
     }
+
+    // 2. random values for the first room
+    const [min, max] = c.ROOM_SIZE_RANGE;
+    const firstRoom = {
+      x: _.random(1, c.GRID_WIDTH - max - 15),
+      y: _.random(1, c.GRID_HEIGHT - max - 15),
+      height: _.random(min, max),
+      width: _.random(min, max),
+      id: 0
+    };
+
+    // 3. place the first room on to grid
+    grid = placeCells(grid, firstRoom);
+
+    // 4. using the first room as a seed, recursivley add rooms to the grid
+    const growMap = (grid, seedRooms, maxRooms = c.MAX_ROOMS) => {
+      if (counter + seedRooms.length > maxRooms || !seedRooms.length) {
+        return grid;
+      }
+      let room = seedRooms.pop();
+      room.id = counter;
+
+      grid = createRoomsFromSeed(grid, room);
+      seedRooms.push(...grid.placedRooms);
+      //counter += grid.placedRooms.length;
+      return growMap(grid.grid, seedRooms);
+    };
+    map.push(growMap(grid, [firstRoom]));
   }
 
-  // 2. random values for the first room
-  const [min, max] = c.ROOM_SIZE_RANGE;
-  const firstRoom = {
-    x: _.random(1, c.GRID_WIDTH - max - 15),
-    y: _.random(1, c.GRID_HEIGHT - max - 15),
-    height: _.random(min, max),
-    width: _.random(min, max),
-    id: 0
-  };
-
-  // 3. place the first room on to grid
-  grid = placeCells(grid, firstRoom);
-
-  // 4. using the first room as a seed, recursivley add rooms to the grid
-  const growMap = (grid, seedRooms, maxRooms = c.MAX_ROOMS) => {
-    if (counter + seedRooms.length > maxRooms || !seedRooms.length) {
-      return grid;
-    }
-    let room = seedRooms.pop();
-    room.id = counter;
-
-    grid = createRoomsFromSeed(grid, room);
-    seedRooms.push(...grid.placedRooms);
-    //counter += grid.placedRooms.length;
-    return growMap(grid.grid, seedRooms);
-  };
-  return growMap(grid, [firstRoom]);
+  return map;
 };
