@@ -104,7 +104,7 @@ class AliveEntity extends PhysicalEntity {
     }
   }
   doAttack(o) {
-    let minusHp = this.stats.attack*(100/(o.stats.defense+100));
+    let minusHp = this.stats.attack*(100/(o.stats.defense+100)).toFixed(2);
     GUI.log(`${this.type} attacked ${o.type} and hitted ${minusHp}`);
     o.hp -= minusHp;
   }
