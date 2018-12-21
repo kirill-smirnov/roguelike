@@ -4,11 +4,26 @@ import {createDungeon} from './dungeon.js'
 
 export class Map {
   constructor() {
-    this.dungeons = [];
-    this.currentID = 0;
-    this.currentLevel = 0;
+    this.map = {
+      world: null,
+      towns: [],
+      dungeons: []
+    };
+    //this.currentMap = null;
+    this.currentDungeonLevel = 0;
+
+    let dungeon = this.createAndNormalizeDungeon();
+    this.currentMap = dungeon[this.currentDungeonLevel];
   }
-  create() {
+
+  // create() {
+  //   let dungeon = this.createAndNormalizeDungeon();
+  //   this.currentMap = dungeon[this.currentDungeonLevel];
+  //   return this.currentMap;
+  // }
+
+
+  createAndNormalizeDungeon() {
     let m = createDungeon(); // array of levels
 
     for (let i = 0; i < m.length; i++) {
@@ -16,12 +31,12 @@ export class Map {
         m[i][j].lighted = false;
       }
     }
-    this.dungeons.push(m);
-    return this.dungeons[this.currentID][this.currentLevel];
+    this.map.dungeons.push(m);
+    return m;
   }
 
   update(camera) {
-    let map = this.dungeons[this.currentID][this.currentLevel];
+    let map = this.currentMap;
     
     for (let i = camera.y; i < camera.y+camera.h; i++) {
       for (let j = camera.x; j < camera.x+camera.w; j++) {
@@ -32,7 +47,7 @@ export class Map {
   }
 
   FOV(player, camera) {
-    let map = this.dungeons[this.currentID][this.currentLevel];
+    let map = this.currentMap;
     let radius = 10;
 
     for (let phi = 0; phi < 360; phi++) {

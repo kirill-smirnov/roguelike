@@ -22,7 +22,7 @@ let player = new Player();
 
 let camera = new Camera();
 let mapManager = new Map();
-let map = mapManager.create();
+let map = mapManager.currentMap;
 let isControlOn = false;
 
 let objects = [];
