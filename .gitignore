@@ -145,3 +145,4 @@ $RECYCLE.BIN/
 yarn.lock
 
 /dist
+/world
