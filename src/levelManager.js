@@ -1,42 +1,45 @@
 import {SYMBOLS, SIZE} from './const.js'
-import {createDungeon} from './dungeon.js'
+import {createDungeon as _createDungeon} from './dungeon.js'
+import { Camera } from './camera.js'
 // import * as inFov from './fov.js';
 
-export class Map {
+export class levelManager {
   constructor() {
-    this.map = {
+    this.levels = {
       world: null,
       towns: [],
       dungeons: []
     };
-    //this.currentMap = null;
-    this.currentDungeonLevel = 0;
 
-    let dungeon = this.createAndNormalizeDungeon();
-    this.currentMap = dungeon[this.currentDungeonLevel];
+    let dungeon = this.createDungeon();
+    this.currentLevel = dungeon;
+    this.currentMap = dungeon.map[dungeon.currentFloor];
   }
 
-  // create() {
-  //   let dungeon = this.createAndNormalizeDungeon();
-  //   this.currentMap = dungeon[this.currentDungeonLevel];
-  //   return this.currentMap;
-  // }
-
-
-  createAndNormalizeDungeon() {
-    let m = createDungeon(); // array of levels
+  createDungeon() {
+    let m = _createDungeon(); // array of levels
 
     for (let i = 0; i < m.length; i++) {
       for (let j = 0; j < m[i].length; j++) {
         m[i][j].lighted = false;
       }
     }
-    this.map.dungeons.push(m);
-    return m;
+
+    let lvl = {
+      id: Math.floor((1 + Math.random()) * 0x10000000000),
+      map: m,
+      objects: [],
+      camera: new Camera(),
+      currentFloor:0
+    }
+    this.levels.dungeons.push(lvl);
+    
+    return lvl;
   }
 
-  update(camera) {
+  update() {
     let map = this.currentMap;
+    let camera = this.currentLevel.camera;
     
     for (let i = camera.y; i < camera.y+camera.h; i++) {
       for (let j = camera.x; j < camera.x+camera.w; j++) {
@@ -46,8 +49,9 @@ export class Map {
 
   }
 
-  FOV(player, camera) {
+  FOV(player) {
     let map = this.currentMap;
+    let camera = this.currentLevel.camera;
     let radius = 10;
 
     for (let phi = 0; phi < 360; phi++) {

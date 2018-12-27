@@ -4,8 +4,8 @@ import './sass/reset.css'
 import {SIZE, SYMBOLS} from './const.js'
 import { Player, Monster } from './entities.js'
 import { controlInit } from './control.js'
-import { Map } from './map.js'
-import { Camera } from './camera.js'
+import { levelManager } from './levelManager.js'
+
 import { GUI } from './gui.js'
 
 Object.defineProperty(Array.prototype, 'flat', {
@@ -20,19 +20,21 @@ const game = document.querySelector('#map');
 
 let player = new Player();
 
-let camera = new Camera();
-let mapManager = new Map();
-let map = mapManager.currentMap;
+
+let lvlManager = new levelManager();//console.log(lvlManager.)
+let map = lvlManager.currentMap;
+let camera = lvlManager.currentLevel.camera;
+let objects = lvlManager.currentLevel.objects;
+
+
 let isControlOn = false;
-
-let objects = [];
-
 function run_level() {
   GUI.log('Welcome to world of Ghoarthea')
   //spawn player 
   player.spawn(map);
   objects.push(player);
-  objects = objects.concat(Monster.spawnMany(map, 2000 ));
+  for (let m of Monster.spawnMany(map, 2000 )) 
+    objects.push(m)
 
   // Input
   if (!isControlOn) {
@@ -49,7 +51,7 @@ function run_level() {
 
 function update() {
   // mapManager update
-  mapManager.update(camera);
+  lvlManager.update();
 
   for (let o of objects) {
     o.update(objects)
@@ -60,7 +62,7 @@ function update() {
 
 function draw(map) {
   // mapManager.draw
-  mapManager.FOV(player, camera);
+  lvlManager.FOV(player);
 
   let screen = [];
   for (let i = camera.y; i < camera.y+camera.h; i++) {
