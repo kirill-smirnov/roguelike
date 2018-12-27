@@ -1,6 +1,7 @@
 import {SYMBOLS, SIZE} from './const.js'
 import {createDungeon as _createDungeon} from './dungeon.js'
 import { Camera } from './camera.js'
+import { Monster } from './entities.js'
 // import * as inFov from './fov.js';
 
 export class levelManager {
@@ -71,5 +72,10 @@ export class levelManager {
         oy += y;
       }
     }
+  }
+
+  createMonsters() {
+    for (let m of Monster.spawnMany(this.currentMap, 2000 )) 
+      this.currentLevel.objects.push(m)
   }
 }

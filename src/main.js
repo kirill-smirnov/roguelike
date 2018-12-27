@@ -2,7 +2,7 @@ import './sass/styles.sass'
 import './sass/reset.css'
 
 import {SIZE, SYMBOLS} from './const.js'
-import { Player, Monster } from './entities.js'
+import { Player } from './entities.js'
 import { controlInit } from './control.js'
 import { levelManager } from './levelManager.js'
 
@@ -26,15 +26,13 @@ let map = lvlManager.currentMap;
 let camera = lvlManager.currentLevel.camera;
 let objects = lvlManager.currentLevel.objects;
 
-
 let isControlOn = false;
 function run_level() {
   GUI.log('Welcome to world of Ghoarthea')
   //spawn player 
   player.spawn(map);
   objects.push(player);
-  for (let m of Monster.spawnMany(map, 2000 )) 
-    objects.push(m)
+  lvlManager.createMonsters();
 
   // Input
   if (!isControlOn) {
