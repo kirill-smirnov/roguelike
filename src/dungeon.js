@@ -6,15 +6,15 @@ const _ = {
   }
 }
 
-let counter = 1;
-
 // by Victor Catalin Torac, 2016
 
-export function createDungeon() {
-  const GRID_HEIGHT = SIZE.h;
-  const GRID_WIDTH = SIZE.w;
-  const MAX_ROOMS = 2000;
-  const ROOM_SIZE_RANGE = [7, 12];
+export function createDungeon(h,w, nRooms, size) {
+  const GRID_HEIGHT = h || SIZE.h;
+  const GRID_WIDTH = w || SIZE.w;
+  const MAX_ROOMS = nRooms || 2000;
+  const ROOM_SIZE_RANGE = size || [7, 12];
+  
+  let counter = 1;
 
   const c= { GRID_HEIGHT, GRID_WIDTH, MAX_ROOMS, ROOM_SIZE_RANGE};
   // HELPER FUNCTIONS FOR CREATING THE MAP
