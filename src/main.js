@@ -3,7 +3,7 @@ import './sass/reset.css'
 
 import {SIZE, SYMBOLS} from './const.js'
 import { Player } from './entities.js'
-import { controlInit } from './control.js'
+import { controlInit, controlTick } from './control.js'
 import { levelManager } from './levelManager.js'
 
 import { GUI } from './gui.js'
@@ -21,12 +21,13 @@ const game = document.querySelector('#map');
 let player = new Player();
 
 
-let lvlManager = new levelManager();//console.log(lvlManager.)
+let lvlManager = new levelManager();
 let map = lvlManager.currentMap;
 let camera = lvlManager.currentLevel.camera;
 let objects = lvlManager.currentLevel.objects;
 
 let isControlOn = false;
+
 function run_level() {
   GUI.log('Welcome to world of Ghoarthea')
   //spawn player 
@@ -50,6 +51,8 @@ function run_level() {
 function update() {
   // mapManager update
   lvlManager.update();
+  controlTick(player, map, camera);
+  camera.moveOnPlayer(player);
 
   for (let o of objects) {
     o.update(objects)
